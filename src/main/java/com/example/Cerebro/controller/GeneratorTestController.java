@@ -28,6 +28,7 @@ public class GeneratorTestController {
         return generatorAgent.generate(prompt, null);
     }
 
+    @GetMapping("/generate-and-write")
     public String testWrite(@RequestParam String prompt) {
         GeneratedArtifact artifact = generatorAgent.generate(prompt, null);
         Path workspace = fileIOService.createWorkspace();
