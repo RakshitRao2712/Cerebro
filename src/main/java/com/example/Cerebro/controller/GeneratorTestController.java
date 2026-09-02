@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.Cerebro.WorkflowManager;
 import com.example.Cerebro.record.EvalResult;
 import com.example.Cerebro.record.GeneratedArtifact;
+import com.example.Cerebro.record.ToolEnum;
 import com.example.Cerebro.record.WorkflowResult;
 import com.example.Cerebro.service.EvaluatorAgent;
 import com.example.Cerebro.service.FileIOService;
@@ -38,12 +39,12 @@ public class GeneratorTestController {
 
     @GetMapping("/generate")
     public GeneratedArtifact test(@RequestParam String prompt) {
-        return generatorAgent.generate(prompt, null);
+        return generatorAgent.generate(prompt, null, ToolEnum.TERRAFORM);
     }
 
     @GetMapping("/generate-and-write")
     public String testWrite(@RequestParam String prompt) {
-        GeneratedArtifact artifact = generatorAgent.generate(prompt, null);
+        GeneratedArtifact artifact = generatorAgent.generate(prompt, null, ToolEnum.TERRAFORM);
         Path workspace = fileIOService.createWorkspace();
         fileIOService.writeArtifact(workspace, artifact);
         return "Written to: " + workspace.resolve(artifact.filename());
@@ -52,7 +53,7 @@ public class GeneratorTestController {
 
     @GetMapping("/generate-write-validate")
     public EvalResult testValidate(@RequestParam String prompt) {
-        GeneratedArtifact artifact = generatorAgent.generate(prompt, null);
+        GeneratedArtifact artifact = generatorAgent.generate(prompt, null, ToolEnum.TERRAFORM);
         Path workspace = fileIOService.createWorkspace();
         fileIOService.writeArtifact(workspace, artifact);
         return terraformValidateStrategy.validate(workspace);
@@ -60,7 +61,7 @@ public class GeneratorTestController {
 
     @GetMapping("/generate-write-validate-evaluate")
     public EvalResult testEvaluate(@RequestParam String prompt) {
-        GeneratedArtifact artifact = generatorAgent.generate(prompt, null);
+        GeneratedArtifact artifact = generatorAgent.generate(prompt, null, ToolEnum.TERRAFORM);
         Path workspace = fileIOService.createWorkspace();
         fileIOService.writeArtifact(workspace, artifact);
         EvalResult rawResult = terraformValidateStrategy.validate(workspace);

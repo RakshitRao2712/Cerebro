@@ -4,6 +4,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
 import com.example.Cerebro.record.GeneratedArtifact;
+import com.example.Cerebro.record.ToolEnum;
 
 @Service
 public class GeneratorAgent {
@@ -14,15 +15,22 @@ public class GeneratorAgent {
         this.chatClient = chatClientBuilder.build();
     }
 
-    public GeneratedArtifact generate(String userPrompt, String priorFeedback) {
-        String systemInstructions = """
-                You are a senior DevOps engineer.
-                Generate ONLY raw Terraform HCL code for the user's request.
-                Rules:
-                - Output raw HCL only. No markdown fences, no ```hcl, no explanations, no comments about what you did.
-                - The code must be syntactically valid and deployable.
-                - Always include a "filename" of "main.tf".
-                """;
+    public GeneratedArtifact generate(String userPrompt, String priorFeedback, ToolEnum tool) {
+        String systemInstructions = switch (tool) {
+            case TERRAFORM -> """
+                    You are a senior DevOps engineer.
+                    Generate ONLY raw Terraform HCL code for the user's request.
+                    Output raw HCL only. No markdown fences, no explanations.
+                    Always include a "filename" of "main.tf".
+                    """;
+            case ANSIBLE -> """
+                    You are a senior DevOps engineer.
+                    Generate ONLY a raw Ansible playbook in YAML for the user's request.
+                    Output raw YAML only. No markdown fences, no explanations.
+                    Always include a "filename" of "playbook.yml".
+                    """;
+            default -> throw new IllegalArgumentException("Unsupported tool: " + tool);
+        };
 
         String userMessage = priorFeedback == null
                 ? userPrompt
