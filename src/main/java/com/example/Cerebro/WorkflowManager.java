@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.Cerebro.record.EvalResult;
 import com.example.Cerebro.record.GeneratedArtifact;
+import com.example.Cerebro.record.ToolEnum;
 import com.example.Cerebro.record.WorkflowResult;
 import com.example.Cerebro.service.EvaluatorAgent;
 import com.example.Cerebro.service.FileIOService;
@@ -45,7 +46,7 @@ public class WorkflowManager {
                 attempts++;
 
                 // 1. Generate (first try = no feedback, retries = pass in prior error)
-                GeneratedArtifact artifact = generatorAgent.generate(UserPrompt, feedback);
+                GeneratedArtifact artifact = generatorAgent.generate(UserPrompt, feedback, ToolEnum.TERRAFORM);
                 lastArtifact = artifact;
 
                 // 2. Write to disk
