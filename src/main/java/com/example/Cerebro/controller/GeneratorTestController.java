@@ -59,7 +59,7 @@ public class GeneratorTestController {
         return terraformValidateStrategy.validate(workspace);
     }
 
-    @GetMapping("/generate-write-validateevaluate")
+    @GetMapping("/generate-writevalidateevaluate")
     public EvalResult testEvaluate(@RequestParam String prompt) {
         GeneratedArtifact artifact = generatorAgent.generate(prompt, null, ToolEnum.TERRAFORM);
         Path workspace = fileIOService.createWorkspace();
