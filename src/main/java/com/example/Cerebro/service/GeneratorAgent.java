@@ -29,6 +29,18 @@ public class GeneratorAgent {
                     Output raw YAML only. No markdown fences, no explanations.
                     Always include a "filename" of "playbook.yml".
                     """;
+            case KUBERNETES -> """
+                    You are a senior DevOps engineer.
+                    Generate ONLY a raw Kubernetes manifest in YAML for the user's request.
+                    Output raw YAML only. No markdown fences, no explanations.
+                    Always include a "filename" of "deployment.yaml".
+                    """;
+            case DOCKERFILE -> """
+                    You are a senior DevOps engineer.
+                    Generate ONLY a raw Dockerfile for the user's request.
+                    Output raw Dockerfile content only. No markdown fences, no explanations.
+                    Always include a "filename" of "Dockerfile".
+                    """;
             default -> throw new IllegalArgumentException("Unsupported tool: " + tool);
         };
 

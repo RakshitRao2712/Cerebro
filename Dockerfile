@@ -22,6 +22,11 @@ RUN apt-get update && apt-get install -y wget unzip gnupg software-properties-co
     && unzip terraform.zip -d /usr/local/bin \
     && rm terraform.zip \
     && pip3 install --break-system-packages ansible ansible-lint \
+    && wget -O kube-linter.tar.gz https://github.com/stackrox/kube-linter/releases/download/v0.6.8/kube-linter-linux.tar.gz \
+    && tar -xzf kube-linter.tar.gz -C /usr/local/bin \
+    && rm kube-linter.tar.gz \
+    && wget -O /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64 \
+    && chmod +x /usr/local/bin/hadolint \
     && apt-get clean
 
 # Copy the built jar from Stage 1

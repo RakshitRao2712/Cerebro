@@ -9,15 +9,13 @@ import com.example.Cerebro.record.ToolEnum;
 import com.example.Cerebro.util.CommandRunner;
 
 @Component
-public class TerraformValidatorStrategy implements DevOpsLinterStrategy {
+public class AnsibleLintStrategy implements DevOpsLinterStrategy {
 
     @Override
     public EvalResult validate(Path workspace) {
         try {
-            CommandRunner.runCommand(workspace, "terraform", "init", "-backend=false");
-            String output = CommandRunner.runCommand(workspace, "terraform", "validate", "-json");
-            boolean isPass = output.contains("\"valid\":true");
-            return new EvalResult(isPass, output);
+            String output = CommandRunner.runCommand(workspace, "ansible-lint", "playbook.yml");
+            return new EvalResult(true, output);
         } catch (Exception e) {
             return new EvalResult(false, "Validator crashed: " + e.getMessage());
         }
@@ -25,6 +23,6 @@ public class TerraformValidatorStrategy implements DevOpsLinterStrategy {
 
     @Override
     public ToolEnum getSupportedTool() {
-        return ToolEnum.TERRAFORM;
+        return ToolEnum.ANSIBLE;
     }
 }

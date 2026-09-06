@@ -38,38 +38,35 @@ public class GeneratorTestController {
     }
 
     @GetMapping("/generate")
-    public GeneratedArtifact test(@RequestParam String prompt) {
-        return generatorAgent.generate(prompt, null, ToolEnum.TERRAFORM);
+    public GeneratedArtifact test(@RequestParam String prompt, @RequestParam(defaultValue = "TERRAFORM") ToolEnum tool) {
+        return generatorAgent.generate(prompt, null, tool);
     }
 
     @GetMapping("/generate-and-write")
-    public String testWrite(@RequestParam String prompt) {
-        GeneratedArtifact artifact = generatorAgent.generate(prompt, null, ToolEnum.TERRAFORM);
+    public String testWrite(@RequestParam String prompt, @RequestParam(defaultValue = "TERRAFORM") ToolEnum tool) {
+        GeneratedArtifact artifact = generatorAgent.generate(prompt, null, tool);
         Path workspace = fileIOService.createWorkspace();
         fileIOService.writeArtifact(workspace, artifact);
         return "Written to: " + workspace.resolve(artifact.filename());
-
-    }
-
-    @GetMapping("/generate-write-validate")
-    public EvalResult testValidate(@RequestParam String prompt) {
-        GeneratedArtifact artifact = generatorAgent.generate(prompt, null, ToolEnum.TERRAFORM);
-        Path workspace = fileIOService.createWorkspace();
-        fileIOService.writeArtifact(workspace, artifact);
-        return terraformValidateStrategy.validate(workspace);
-    }
-
-    @GetMapping("/generate-writevalidateevaluate")
-    public EvalResult testEvaluate(@RequestParam String prompt) {
-        GeneratedArtifact artifact = generatorAgent.generate(prompt, null, ToolEnum.TERRAFORM);
-        Path workspace = fileIOService.createWorkspace();
-        fileIOService.writeArtifact(workspace, artifact);
-        EvalResult rawResult = terraformValidateStrategy.validate(workspace);
-        return evaluatorAgent.evaluate(artifact.code(), rawResult.feedback());
     }
 
     @GetMapping("/run-workflow")
-    public WorkflowResult testWorkflow(@RequestParam String prompt) {
-        return workflowManager.run(prompt);
+    public WorkflowResult testWorkflow(@RequestParam String prompt, @RequestParam(defaultValue = "TERRAFORM") ToolEnum tool) {
+        return workflowManager.run(prompt, tool);
+    }
+
+    @GetMapping("/test-ansible")
+    public WorkflowResult testAnsible(@RequestParam String prompt) {
+        return workflowManager.run(prompt, ToolEnum.ANSIBLE);
+    }
+
+    @GetMapping("/test-k8s")
+    public WorkflowResult testK8s(@RequestParam String prompt) {
+        return workflowManager.run(prompt, ToolEnum.KUBERNETES);
+    }
+
+    @GetMapping("/test-hadolint")
+    public WorkflowResult testHadolint(@RequestParam String prompt) {
+        return workflowManager.run(prompt, ToolEnum.DOCKERFILE);
     }
 }

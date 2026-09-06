@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Cerebro.WorkflowManager;
+import com.example.Cerebro.record.ToolEnum;
 import com.example.Cerebro.record.WorkflowResult;
 
 @RestController
@@ -19,10 +20,10 @@ public class DevOpsController {
 
     @PostMapping("/generate")
     public WorkflowResult generate(@RequestBody GenerateRequest request) {
-        return workflowManager.run(request.prompt());
+        return workflowManager.run(request.prompt(), request.tool());
     }
 
-    public record GenerateRequest(String prompt) {
+    public record GenerateRequest(String prompt, ToolEnum tool) {
     }
 
 }

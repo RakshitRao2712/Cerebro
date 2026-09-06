@@ -14,13 +14,13 @@ public class EvaluatorAgent {
         this.chatClient = chatClientBuilder.build();
     }
 
-    public EvalResult evaluate(String code, String rawLinterOutput) {
+    public EvalResult evaluate(String code, EvalResult rawResult) {
 
-        boolean isPass = rawLinterOutput.contains("\"valid\":true");
-
-        if (isPass) {
+        if (rawResult.isPass()) {
             return new EvalResult(true, "Code is valid.");
         }
+        
+        String rawLinterOutput = rawResult.feedback();
         String systemInstructions = """
                 You are a senior DevOps engineer reviewing a Terraform validation failure.
                 You will be given the Terraform code and the raw error output from `terraform validate -json`.
